@@ -81,3 +81,5 @@ class FileStorageError(AppException):
 
 class AIServiceerror(ExternalServiceError):
     error_code="ai_service_error"
+
+#external

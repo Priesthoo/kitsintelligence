@@ -32,11 +32,11 @@ class Settings(BaseSettings):
     CORS_ORIGINS : list[str| None] = [""]
     CORS_ALLOW_CREDENTIALS : bool = True
 
-    POSTGRES_USER : str|None = "" # please it should not be none, i kept it there because i have not configured the database and it should not be union
-    POSTGRES_PASSWORD : str| None = "" # same here
+    POSTGRES_USER : str|None = "postgres" # please it should not be none, i kept it there because i have not configured the database and it should not be union
+    POSTGRES_PASSWORD : str| None = "kitsintelligence" # same here
     POSTGRES_HOST : str = "localhost"
     POSTGRES_PORT : int = 5432
-    POSTGRES_DB : str| None = "" # same here
+    POSTGRES_DB : str| None = "kitLab" # same here
     DB_POOL_SIZE : int = 20
     DB_MAX_OVERFLOW : int = 10
     DB_POOL_TIMEOUT : int = 30
@@ -51,7 +51,10 @@ class Settings(BaseSettings):
 
     @property
     def SQLALCHEMY_SYNC_DATABASE_URI(self) -> str :
-        return NotImplementedError()
+        return (
+            f"postgresql+psycopg2://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}"
+            f"@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
+        )
 
 # Redis
 
@@ -61,6 +64,11 @@ class Settings(BaseSettings):
     REDIS_PASSWORD :str|None = None
     REDIS_MAX_CONNECTIONS : int = 100
     CACHE_DEFAULT_TTL_SECONDS : int = 300
+    
+    @property
+    def REDIS_URL(self) -> str :
+        auth = f"{self.REDIS_PASSWORD}@" if self.REDIS_PASSWORD else ""
+        return f"redis://{auth}{self.REDIS_HOST}:{self.REDIS_PORT}/{self.REDIS_DB}"
 
 #Celery 
     CELERY_BROKER_URL : str|None = "" #it should not be none 

@@ -42,7 +42,7 @@ from app.repositories.identity import (
     UserRepository,
 )
 from app.schemas.identity import LoginRequest, RegisterRequest, TokenPair
-from app.services.audit_service import AuditService
+from app.repositories.audit_service import AuditService
 from sqlalchemy.ext.asyncio import AsyncSession
 
 MAX_FAILED_LOGIN_ATTEMPTS = 5

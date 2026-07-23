@@ -57,7 +57,7 @@ team_members = Table(
 )
 
 
-class Organization(Base, UUIDPrimaryKeyMixin, TimestampMixin, SoftDeleteMixin):
+class Organization(Base, UUIDPrimaryKeyMixin, TimeStampMixin, SoftDeleteMixin):
     __tablename__ = "organizations"
 
     name: Mapped[str] = mapped_column(String(255), nullable=False)
@@ -75,7 +75,7 @@ class Organization(Base, UUIDPrimaryKeyMixin, TimestampMixin, SoftDeleteMixin):
     __table_args__ = (Index("ix_organizations_active", "is_active"),)
 
 
-class Team(Base, UUIDPrimaryKeyMixin, TimestampMixin, SoftDeleteMixin):
+class Team(Base, UUIDPrimaryKeyMixin, TimeStampMixin, SoftDeleteMixin):
     __tablename__ = "teams"
 
     organization_id: Mapped[uuid.UUID] = mapped_column(
@@ -90,7 +90,7 @@ class Team(Base, UUIDPrimaryKeyMixin, TimestampMixin, SoftDeleteMixin):
     __table_args__ = (UniqueConstraint("organization_id", "name", name="uq_team_org_name"),)
 
 
-class Permission(Base, UUIDPrimaryKeyMixin, TimestampMixin):
+class Permission(Base, UUIDPrimaryKeyMixin, TimeStampMixin):
     __tablename__ = "permissions"
 
     resource: Mapped[str] = mapped_column(String(100), nullable=False)
@@ -106,7 +106,7 @@ class Permission(Base, UUIDPrimaryKeyMixin, TimestampMixin):
         return f"{self.resource}:{self.action}"
 
 
-class Role(Base, UUIDPrimaryKeyMixin, TimestampMixin, SoftDeleteMixin):
+class Role(Base, UUIDPrimaryKeyMixin, TimeStampMixin, SoftDeleteMixin):
     __tablename__ = "roles"
 
     organization_id: Mapped[uuid.UUID] = mapped_column(
@@ -123,7 +123,7 @@ class Role(Base, UUIDPrimaryKeyMixin, TimestampMixin, SoftDeleteMixin):
     __table_args__ = (UniqueConstraint("organization_id", "name", name="uq_role_org_name"),)
 
 
-class User(Base, UUIDPrimaryKeyMixin, TimestampMixin, SoftDeleteMixin):
+class User(Base, UUIDPrimaryKeyMixin, TimeStampMixin, SoftDeleteMixin):
     __tablename__ = "users"
 
     organization_id: Mapped[uuid.UUID] = mapped_column(
@@ -169,7 +169,7 @@ class User(Base, UUIDPrimaryKeyMixin, TimestampMixin, SoftDeleteMixin):
         return bool(self.locked_until and self.locked_until > utcnow())
 
 
-class RefreshToken(Base, UUIDPrimaryKeyMixin, TimestampMixin):
+class RefreshToken(Base, UUIDPrimaryKeyMixin, TimeStampMixin):
     __tablename__ = "refresh_tokens"
 
     user_id: Mapped[uuid.UUID] = mapped_column(
@@ -185,7 +185,7 @@ class RefreshToken(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     user: Mapped["User"] = relationship(back_populates="refresh_tokens")
 
 
-class APIKey(Base, UUIDPrimaryKeyMixin, TimestampMixin):
+class APIKey(Base, UUIDPrimaryKeyMixin, TimeStampMixin):
     __tablename__ = "api_keys"
 
     user_id: Mapped[uuid.UUID] = mapped_column(

@@ -71,7 +71,7 @@ class CacheManager:
             logger.error("cache.get_failed", key=key, error = str(exc))
             raise CacheError(f"Failed to read cache key {key}") from exc
         
-    async def set(self, key:str, value : str, ttl_seconds : int | None = None) -> :
+    async def set(self, key:str, value : str, ttl_seconds : int | None = None) -> str :
         try :
              await self._client.set(key,value, ex = ttl_seconds or settings.CACHE_DEFAULT_TTL_SECONDS)
         except RedisError as exc:

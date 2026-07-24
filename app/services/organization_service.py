@@ -9,7 +9,7 @@ from app.exceptions.base import NotFoundError
 from app.models.identity import Organization, User
 from app.repositories.identity import OrganizationRepository
 from app.schemas.identity import OrganizationUpdate
-from app.repositories.audit_service import AuditService
+from app.services.audit_service import AuditService
 
 
 class OrganizationService:

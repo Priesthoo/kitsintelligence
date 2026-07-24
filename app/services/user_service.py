@@ -18,7 +18,7 @@ from app.exceptions.base import AlreadyExistsError, NotFoundError, ValidationErr
 from app.models.identity import User, UserStatus
 from app.repositories.identity import APIKeyRepository, OrganizationRepository, RoleRepository, UserRepository
 from app.schemas.identity import APIKeyCreate, UserAdminUpdate, UserInvite, UserUpdate
-from app.repositories.audit_service import AuditService
+from app.services.audit_service import AuditService
 
 
 class UserService:

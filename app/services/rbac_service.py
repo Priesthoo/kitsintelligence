@@ -9,7 +9,7 @@ from app.exceptions.base import NotFoundError, ValidationError
 from app.models.identity import Permission, Role, User
 from app.repositories.identity import PermissionRepository, RoleRepository
 from app.schemas.identity import RoleCreate, RoleUpdate
-from app.repositories.audit_service import AuditService
+from app.services.audit_service import AuditService
 
 
 class RBACService:

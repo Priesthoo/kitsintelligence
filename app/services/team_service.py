@@ -9,7 +9,7 @@ from app.exceptions.base import NotFoundError
 from app.models.identity import Team, User
 from app.repositories.identity import TeamRepository, UserRepository
 from app.schemas.identity import TeamCreate, TeamUpdate
-from app.repositories.audit_service import AuditService
+from app.services.audit_service import AuditService
 
 
 class TeamService:

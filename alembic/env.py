@@ -15,7 +15,7 @@ from app.core.config import settings
 from app.db.base import Base
 
 # Import every model module so Base.metadata is fully populated before autogenerate.
-from app.models import identity  # noqa: F401
+from app.models import identity, data_sources, notifications, reports , files # noqa: F401
 
 config = context.config
 config.set_main_option("sqlalchemy.url", settings.SQLALCHEMY_DATABASE_URL)

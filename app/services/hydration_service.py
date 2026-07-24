@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import time
 import uuid
-from datetime import datetime, timedelta
+from datetime import  timedelta
 
 from sqlalchemy.ext.asyncio import AsyncSession
 

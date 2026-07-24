@@ -71,8 +71,8 @@ class Settings(BaseSettings):
         return f"redis://{auth}{self.REDIS_HOST}:{self.REDIS_PORT}/{self.REDIS_DB}"
 
 #Celery 
-    CELERY_BROKER_URL : str|None = "" #it should not be none 
-    CELERY_RESULT_BACKEND : str| None = "" #alos here i made it none because i have not configured it in the setting
+    CELERY_BROKER_URL : str|None = "amqp://guest:guest@localhost:5672//" #it should not be none 
+    CELERY_RESULT_BACKEND : str| None =  "redis://localhost:6379/1"#alos here i made it none because i have not configured it in the setting
     CELERY_TASK_ALWAYS_EAGER : bool = False
 
 

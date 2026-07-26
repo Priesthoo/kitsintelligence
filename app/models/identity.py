@@ -70,7 +70,7 @@ class Organization(Base, UUIDPrimaryKeyMixin, TimeStampMixin, SoftDeleteMixin):
 
     users: Mapped[list["User"]] = relationship(back_populates="organization", cascade="all, delete-orphan")
     teams: Mapped[list["Team"]] = relationship(back_populates="organization", cascade="all, delete-orphan")
-    roles: Mapped[list["Role"]] = relationship(back_populates="organization", cascade="all, delete-orphan")
+    roles: Mapped[list["Role"]] = relationship(back_populates="organization", cascade="all, delete-orphan", lazy="selectin")
 
     __table_args__ = (Index("ix_organizations_active", "is_active"),)
 
@@ -97,7 +97,7 @@ class Permission(Base, UUIDPrimaryKeyMixin, TimeStampMixin):
     action: Mapped[str] = mapped_column(String(50), nullable=False)
     description: Mapped[str | None] = mapped_column(String(255), nullable=True)
 
-    roles: Mapped[list["Role"]] = relationship(secondary=role_permissions, back_populates="permissions")
+    roles: Mapped[list["Role"]] = relationship(secondary=role_permissions, back_populates="permissions", lazy = "selectin")
 
     __table_args__ = (UniqueConstraint("resource", "action", name="uq_permission_resource_action"),)
 
@@ -117,7 +117,7 @@ class Role(Base, UUIDPrimaryKeyMixin, TimeStampMixin, SoftDeleteMixin):
     description: Mapped[str | None] = mapped_column(String(255), nullable=True)
 
     organization: Mapped["Organization"] = relationship(back_populates="roles")
-    permissions: Mapped[list["Permission"]] = relationship(secondary=role_permissions, back_populates="roles")
+    permissions: Mapped[list["Permission"]] = relationship(secondary=role_permissions, back_populates="roles", lazy="selectin")
     users: Mapped[list["User"]] = relationship(secondary=user_roles, back_populates="roles")
 
     __table_args__ = (UniqueConstraint("organization_id", "name", name="uq_role_org_name"),)
@@ -146,7 +146,7 @@ class User(Base, UUIDPrimaryKeyMixin, TimeStampMixin, SoftDeleteMixin):
     preferences_json: Mapped[dict] = mapped_column(JSONB, default=dict, nullable=False)
 
     organization: Mapped["Organization"] = relationship(back_populates="users")
-    roles: Mapped[list["Role"]] = relationship(secondary=user_roles, back_populates="users")
+    roles: Mapped[list["Role"]] = relationship(secondary=user_roles, back_populates="users", lazy="selectin")
     teams: Mapped[list["Team"]] = relationship(secondary=team_members, back_populates="members")
     refresh_tokens: Mapped[list["RefreshToken"]] = relationship(
         back_populates="user", cascade="all, delete-orphan"

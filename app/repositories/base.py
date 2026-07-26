@@ -65,7 +65,6 @@ class BaseRepository(Generic[ModelType]):
         instance = self.model(**kwargs)
         self.session.add(instance)
         await self.session.flush()
-        await self.session.refresh(instance)
         return instance
 
     async def update(self, instance: ModelType, **kwargs: Any) -> ModelType:

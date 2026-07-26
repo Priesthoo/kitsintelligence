@@ -194,7 +194,6 @@ class UserRead(ORMBase):
     phone_number: str | None
     last_login_at: datetime | None
     created_at: datetime
-    roles: list[RoleRead] = Field(default_factory=list)
 
 
 class UserPublic(ORMBase):
@@ -263,10 +262,22 @@ class MFAVerifyRequest(BaseModel):
     code: str = Field(min_length=6, max_length=6)
 
 
+# --------------------------------------------------------------------- #
+# API Keys
+# --------------------------------------------------------------------- #
 class APIKeyCreate(BaseModel):
     name: str = Field(min_length=1, max_length=150)
     scopes: list[str] = Field(default_factory=list)
     expires_at: datetime | None = None
+
+    @field_validator("expires_at")
+    @classmethod
+    def _validate_future(cls, v: datetime | None) -> datetime | None:
+        if v is not None:
+            now = datetime.now(v.tzinfo) if v.tzinfo else datetime.utcnow()
+            if v <= now:
+                raise ValueError("expires_at must be in the future")
+        return v
 
 
 class APIKeyCreateResponse(ORMBase):

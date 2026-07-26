@@ -50,7 +50,7 @@ def register_exception_handlers(app: FastAPI) -> None:
             for err in exc.errors()
         ]
         return JSONResponse(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
             content=_envelope("validation_error", "Request validation failed", {"errors": errors}, request_id),
         )
 
@@ -79,7 +79,7 @@ def register_exception_handlers(app: FastAPI) -> None:
     async def handle_sqlalchemy_error(request: Request, exc: SQLAlchemyError) -> JSONResponse:
         request_id = getattr(request.state, "request_id", None)
         error_ref = str(uuid.uuid4())
-        logger.error("database.error", error_ref=error_ref, error=str(exc), path=request.url.path)
+        logger.exception("database.error", error_ref=error_ref,  path=request.url.path)
         return JSONResponse(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             content=_envelope(

@@ -73,6 +73,11 @@ class AuthService:
             slug=payload.organization_slug,
             plan=OrganizationPlan.TRIAL.value,
         )
+        
+        from app.repositories.identity import PermissionRepository
+                
+        all_perms = await PermissionRepository(self.session).list_all()
+        
 
         owner_role = await self.roles.create(
             id=uuid.uuid4(),
@@ -80,12 +85,10 @@ class AuthService:
             name="Owner",
             description="Full administrative access to the organization",
             is_system_role=True,
+            permissions=all_perms
         )
-        from app.repositories.identity import PermissionRepository
-
-        all_perms = await PermissionRepository(self.session).list_all()
-        owner_role.permissions = all_perms
-        await self.session.flush()
+       
+        
 
         user = await self.users.create(
             id=uuid.uuid4(),
@@ -95,8 +98,9 @@ class AuthService:
             full_name=payload.full_name,
             status=UserStatus.ACTIVE.value,
             is_email_verified=False,
+            roles = [owner_role]
         )
-        user.roles.append(owner_role)
+        
         await self.session.flush()
 
         await self.audit.record(

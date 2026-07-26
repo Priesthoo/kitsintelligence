@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     #Application
     APP_NAME : str = "Kitsintelligence"
     APP_VERSION : str ="1.0.0"
-    ENVIRONMENT : Literal["development","staging","production", "test"] = "development"
+    ENVIRONMENT : Literal["development","staging","production", "test"] = "test"
     DEBUG : bool = False
     API_V1_PREFIX : str = "/api/v1" 
     HOST: str = "0.0.0.0"

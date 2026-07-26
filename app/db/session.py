@@ -14,14 +14,9 @@ from app.core.logging import get_logger
 logger = get_logger(__name__)
 
 engine = create_async_engine(
-    settings.SQLALCHEMY_SYNC_DATABASE_URI,
+    settings.SQLALCHEMY_DATABASE_URL,
     echo = settings.DB_ECHO,
-    pool_pre_ping = True,
-    pool_size = settings.DB_POOL_SIZE if settings.ENVIRONMENT != "test" else 5 ,
-    max_overflow = settings.DB_MAX_OVERFLOW,
-    pool_timeout = settings.DB_POOL_TIMEOUT,
-    pool_recycle = settings.DB_POOL_RECYCLE,
-    pool_class = NullPool if settings.ENVIRONMENT == "test" else None
+    
     )
 
 

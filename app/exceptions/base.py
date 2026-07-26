@@ -45,7 +45,7 @@ class AuthorizationError(AppException):
     status_code = 403
     error_code =" forbidden"
 
-class InsufficientPermissionError(AuthorizationError):
+class InsufficientPermissionsError(AuthorizationError):
     error_code = "Insufficient_permission"
     
 class RateLimitExceededError(AppException):

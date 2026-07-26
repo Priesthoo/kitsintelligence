@@ -21,6 +21,7 @@ from app.db.session import engine
 from app.middleware.exception_handler import register_exception_handlers
 from app.middleware.rate_limiter import RateLimitMiddleware
 from app.middleware.request_context import RequestContextMiddleware
+from app.websockets.gateway import router as websocket_router
 
 configure_logging()
 logger = get_logger(__name__)
@@ -64,7 +65,8 @@ def create_app() -> FastAPI:
 
     register_exception_handlers(app)
 
-    app.include_router(api_router, prefix=settings.API_V1_PREFIX)
+    app.include_router(api_router, prefix=settings.API_V1_PREFIX) 
+    app.include_router(websocket_router)
     app.add_api_route(settings.PROMETHEUS_METRICS_PATH, metrics_endpoint, include_in_schema=False)
 
     if settings.OTEL_EXPORTER_OTLP_ENDPOINT:

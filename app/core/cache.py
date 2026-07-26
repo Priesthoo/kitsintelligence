@@ -42,7 +42,7 @@ def get_redis_pool() -> ConnectionPool:
     if _pool is None:
         _pool = ConnectionPool.from_url(
             settings.REDIS_URL,
-            max_connection = settings.REDIS_MAX_CONNECTIONS,
+            max_connections = settings.REDIS_MAX_CONNECTIONS,
             decode_responses = True
         )
     return _pool
@@ -60,7 +60,7 @@ class CacheManager:
     """ High level cache operation"""
     
     
-    def __init(self, client : Redis | None =None) -> None:
+    def __init__(self, client : Redis | None =None) -> None:
         self._client = client or get_redis_client()
         
     """ key and values"""

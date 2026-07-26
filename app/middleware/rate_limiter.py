@@ -28,14 +28,14 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         cache = get_cache_manager()
         key = f"ratelimit:{client_id}:{request.url.path}"
         now = time.time()
-        window_start = now - settings.RATE_LIMIT_WINDOW_SECONDS
+        window_start = now - settings.RATE_LIMITS_WINDOW_SECONDS
 
         redis_client = cache._client
         pipe = redis_client.pipeline()
         pipe.zremrangebyscore(key, 0, window_start)
         pipe.zadd(key, {f"{now}": now})
         pipe.zcard(key)
-        pipe.expire(key, settings.RATE_LIMIT_WINDOW_SECONDS)
+        pipe.expire(key, settings.RATE_LIMITS_WINDOW_SECONDS)
         results = await pipe.execute()
         request_count = results[2]
 
@@ -48,7 +48,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
                         "message": "Too many requests. Please slow down.",
                         "details": {
                             "limit": settings.RATE_LIMIT_REQUESTS,
-                            "window_seconds": settings.RATE_LIMIT_WINDOW_SECONDS,
+                            "window_seconds": settings.RATE_LIMITS_WINDOW_SECONDS,
                         },
                     }
                 },

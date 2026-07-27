@@ -78,7 +78,7 @@ class BaseConnector(abc.ABC):
         try:
             await self.fetch()
             return True
-        except Exception:  # noqa: BLE001
+        except Exception:  
             return False
 
     @retry(
@@ -106,7 +106,7 @@ class BaseConnector(abc.ABC):
             CONNECTOR_REQUESTS_TOTAL.labels(connector=self.key, status="transport_error").inc()
             logger.warning("connector.transport_error", connector=self.key, error=str(exc))
             raise
-        except Exception as exc:  # noqa: BLE001
+        except Exception as exc:  
             CONNECTOR_REQUESTS_TOTAL.labels(connector=self.key, status="error").inc()
             logger.error("connector.unexpected_error", connector=self.key, error=str(exc))
             raise ConnectorError(f"Connector '{self.key}' failed: {exc}") from exc
@@ -121,7 +121,7 @@ class ConnectorRegistry:
     _registry: dict[str, type[BaseConnector]] = {}
 
     @classmethod
-    def register(cls, key: str):  # noqa: ANN201
+    def register(cls, key: str):  
         def _decorator(connector_cls: type[BaseConnector]) -> type[BaseConnector]:
             connector_cls.key = key
             cls._registry[key] = connector_cls

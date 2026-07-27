@@ -1,9 +1,9 @@
 """
 WebSocket Gateway endpoint. Clients authenticate via a short-lived JWT
 passed as a query param (browsers cannot set custom headers on the
-WebSocket handshake), then receive real-time pushes: notifications, alert
-updates, hydration-completion events, and report-ready signals — all
-without polling.
+WebSocket handshake), then receive real-time pushes: notifications, org-wide
+alert broadcasts, hydration-completion events, and report-ready signals —
+all without polling.
 """
 from __future__ import annotations
 
@@ -38,18 +38,18 @@ async def websocket_endpoint(websocket: WebSocket, token: str = Query(...)) -> N
         if user is None or user.status != "active":
             await websocket.close(code=status.WS_1008_POLICY_VIOLATION, reason="User not active")
             return
+        org_id = str(user.organization_id)
 
     cache = get_cache_manager()
     bridge = get_redis_bridge(cache)
 
-    await connection_manager.connect(user_id, websocket)
+    await connection_manager.connect(user_id, org_id, websocket)
     await bridge.subscribe_for_user(user_id)
+    await bridge.subscribe_for_org(org_id)
 
     try:
-        await websocket.send_json({"type": "connected", "user_id": user_id})
+        await websocket.send_json({"type": "connected", "user_id": user_id, "organization_id": org_id})
         while True:
-            # Clients may send lightweight pings/acks; the gateway itself is push-only
-            # for domain events, so incoming messages are just liveness signals.
             data = await websocket.receive_json()
             if data.get("type") == "ping":
                 await websocket.send_json({"type": "pong"})
@@ -58,6 +58,8 @@ async def websocket_endpoint(websocket: WebSocket, token: str = Query(...)) -> N
     except Exception as exc:  # noqa: BLE001
         logger.error("websocket.unexpected_error", user_id=user_id, error=str(exc))
     finally:
-        await connection_manager.disconnect(user_id, websocket)
-        if not connection_manager._connections.get(user_id):
-            await bridge.unsubscribe_for_user(user_id)
+        disconnected_user_id, disconnected_org_id = await connection_manager.disconnect(websocket)
+        if disconnected_user_id and connection_manager.has_no_connections_for_user(disconnected_user_id):
+            await bridge.unsubscribe_for_user(disconnected_user_id)
+        if disconnected_org_id and connection_manager.has_no_connections_for_org(disconnected_org_id):
+            await bridge.unsubscribe_for_org(disconnected_org_id)

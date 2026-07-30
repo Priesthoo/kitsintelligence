@@ -55,7 +55,7 @@ async def websocket_endpoint(websocket: WebSocket, token: str = Query(...)) -> N
                 await websocket.send_json({"type": "pong"})
     except WebSocketDisconnect:
         logger.info("websocket.client_disconnected", user_id=user_id)
-    except Exception as exc:  # noqa: BLE001
+    except Exception as exc:  
         logger.error("websocket.unexpected_error", user_id=user_id, error=str(exc))
     finally:
         disconnected_user_id, disconnected_org_id = await connection_manager.disconnect(websocket)

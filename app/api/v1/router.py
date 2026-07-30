@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from fastapi import APIRouter
 
-from app.api.v1 import auth, health, organizations, users, data_source,intelligence,dashboard,alert,incident
+from app.api.v1 import auth, health, organizations, users, data_source,intelligence,dashboard,alert,incident,event_correlation
 
 api_router = APIRouter()
 

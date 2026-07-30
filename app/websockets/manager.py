@@ -70,7 +70,7 @@ class ConnectionManager:
                 try:
                     await ws.send_json(message)
                     sent += 1
-                except Exception as exc:  # noqa: BLE001
+                except Exception as exc:  
                     logger.warning("websocket.send_failed", user_id=user_id, error=str(exc))
                     await self.disconnect(ws)
         return sent

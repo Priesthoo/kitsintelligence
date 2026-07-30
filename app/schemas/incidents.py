@@ -37,7 +37,7 @@ class IncidentAddNote(BaseModel):
 
 class IncidentUpdateRead(ORMBase):
     id: uuid.UUID
-    author_id: uuid.UUID
+    author_id: uuid.UUID | None
     note: str
     status_change_to: str | None
     created_at: datetime
@@ -53,7 +53,8 @@ class IncidentRead(ORMBase):
     category: str
     assigned_to_id: uuid.UUID | None
     assigned_team_id: uuid.UUID | None
-    created_by_id: uuid.UUID
+    created_by_id: uuid.UUID | None
+    is_system_generated: bool
     metadata_json: dict
     resolved_at: datetime | None
     closed_at: datetime | None

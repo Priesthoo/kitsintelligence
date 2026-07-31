@@ -12,7 +12,7 @@ from celery.schedules import crontab
 from app.core.config import settings
 
 celery_app = Celery(
-    "kitsintelligence",
+    "opint_platform",
     broker=settings.CELERY_BROKER_URL,
     backend=settings.CELERY_RESULT_BACKEND,
     include=[
@@ -21,6 +21,7 @@ celery_app = Celery(
         "app.workers.tasks.report_tasks",
         "app.workers.tasks.maintenance_tasks",
         "app.workers.tasks.correlation_tasks",
+        "app.workers.tasks.risk_tasks",
     ],
 )
 
@@ -42,6 +43,7 @@ celery_app.conf.update(
         "app.workers.tasks.report_tasks.*": {"queue": "reports"},
         "app.workers.tasks.maintenance_tasks.*": {"queue": "default"},
         "app.workers.tasks.correlation_tasks.*": {"queue": "default"},
+        "app.workers.tasks.risk_tasks.*": {"queue": "default"},
     },
     beat_schedule={
         "hydrate-active-data-sources": {
@@ -55,6 +57,10 @@ celery_app.conf.update(
         "run-event-correlation": {
             "task": "app.workers.tasks.correlation_tasks.run_correlation_for_all_orgs",
             "schedule": 120.0,
+        },
+        "recalculate-risk-profiles": {
+            "task": "app.workers.tasks.risk_tasks.recalculate_all_risk_profiles",
+            "schedule": 600.0,
         },
         "cleanup-expired-tokens": {
             "task": "app.workers.tasks.maintenance_tasks.purge_expired_refresh_tokens",

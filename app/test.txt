@@ -1,0 +1,14 @@
+POST /api/v1/data-sources
+{
+  "name": "Nigeria Conflict Events (ACLED)",
+  "slug": "acled-nigeria",
+  "category": "conflict_events",
+  "connector_key": "conflict_events_acled",
+  "fallback_connector_keys": ["osint_gdelt"],
+  "config_json": {"country": "Nigeria", "since_days": 30},
+  "sync_interval_seconds": 3600,
+  "credentials": [
+    {"credential_key": "email", "value": "you@example.com"},
+    {"credential_key": "api_key", "value": "<your-acled-access-key>"}
+  ]
+}

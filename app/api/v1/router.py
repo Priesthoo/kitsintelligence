@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from fastapi import APIRouter
 
-from app.api.v1 import auth, health, organizations, users, data_source,intelligence,dashboard,alert,incident,event_correlation,risk_assessment,notification,report
+from app.api.v1 import auth, health, organizations, users, data_source,intelligence,dashboard,alert,incident,event_correlation,risk_assessment,notification,report,knowledge_graph
 
 api_router = APIRouter()
 
@@ -20,4 +20,5 @@ api_router.include_router(event_correlation.router)
 api_router.include_router(risk_assessment.router)
 api_router.include_router(notification.router)
 api_router.include_router(report.router)
+api_router.include_router(knowledge_graph.router)
 
